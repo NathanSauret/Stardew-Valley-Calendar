@@ -397,7 +397,7 @@ void list_or_calendar()
     while (1) {
         clear();    // clear display
         printf("[1] List\n");
-        printf("[2] Calandar\n\n");
+        printf("[2] Calendar\n\n");
         printf("How would you like to see the plantations? ([1-2]/n): ");
 
         choice = getchar();
