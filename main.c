@@ -47,8 +47,17 @@ void display_list()
 
     // error message if can't open
     if(plantListCsvRead == NULL){
-        printf("\e[1;1H\e[2J");     // scroll to clear the display
+        clear();    // clear display
         printf("Couldn't open file\n");
+        fflush(stdout);
+        sleep(2);
+        return;
+    }
+
+    // say if no plants in calendar
+    if (get_csv_row_length("plant_list.csv") == 2) {
+        clear();    // clear display
+        printf("No plants in the calendar\n");
         fflush(stdout);
         sleep(2);
         return;
@@ -157,6 +166,15 @@ void display_calendar()
     if(plantListCsvRead == NULL){
         printf("\e[1;1H\e[2J");     // scroll to clear the display
         printf("Couldn't open file\n");
+        fflush(stdout);
+        sleep(2);
+        return;
+    }
+
+    // say if no plants in the calendar
+    if (get_csv_row_length("plant_list.csv") == 2) {
+        clear();    // clear display
+        printf("No plants in the calendar\n");
         fflush(stdout);
         sleep(2);
         return;
