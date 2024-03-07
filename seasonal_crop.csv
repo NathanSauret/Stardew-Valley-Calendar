@@ -1,0 +1,43 @@
+crop,season,days_to_grow,seed_price,sell_price
+Cauliflower,spring,12,80,175
+Potato,spring,6,50,80
+Kale,spring,6,70,110
+Garlic,spring,4,40,60
+Parsnip,spring,4,20,35
+Rhubarb,spring,13,100,220
+Blue Jazz,spring,7,30,50
+Tulip,spring,6,20,30
+Strawberry,spring,8,100,120
+Green Beam,spring,10,60,40
+Coffee Bean,spring,10,2500,15
+Ancient Fruit,spring,28,1000,550
+Melon,summer,12,80,250
+Red Cabbage,summer,9,100,260
+Radish,summer,6,40,90
+Starfruit,summer,13,400,750
+Wheat,summer,4,10,25
+Sunflower,summer,8,200,80
+Summer Spangle,summer,8,50,90
+Poppy,summer,7,100,140
+Blueberry,summer,13,80,50
+Hops,summer,11,60,25
+Coffee Bean,summer,10,2500,15
+Tomato,summer,11,50,60
+Hot Pepper,summer,5,40,40
+Corn,summer,14,150,50
+Ancient Fruit,summer,28,1000,550
+Pumpkin,fall,13,100,320
+Artichoke,fall,8,30,160
+Beet,fall,6,20,100
+Bok Choy,fall,4,50,80
+Wheat,fall,4,10,25
+Amaranth,fall,7,70,150
+Sweet Gem Berry,fall,24,1000,3000
+Yam,fall,10,60,160
+Sunflower,fall,8,200,80
+Fairy Rose,fall,12,200,290
+Corn,fall,14,150,50
+Ancient Fruit,fall,28,1000,550
+Eggplant,fall,5,20,60
+Cranberries,fall,7,240,75
+Grapes,fall,10,60,80
