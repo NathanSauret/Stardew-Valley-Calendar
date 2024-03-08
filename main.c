@@ -2,7 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <time.h>
+#include <ctype.h>
+#include <unistd.h>
 
 #define MAXCHAR 1000    // the max char for csv files
 #define seasonLength 28     // the length of seasons
@@ -72,7 +73,7 @@ void display_list()
 
     // error message if can't open
     if(seasonalCropCsvRead == NULL){
-        printf("\e[1;1H\e[2J");     // scroll to clear the display
+        clear();    // clear display
         printf("Couldn't open file\n");
         fflush(stdout);
         sleep(2);
@@ -80,9 +81,9 @@ void display_list()
     }
 
     
-    char *quitChoice;
+    char quitChoice;
     while (quitChoice != 'q') {
-        printf("\e[1;1H\e[2J");     // scroll to clear the display
+        clear();    // clear display
         // display plants list
         plantListCsvRead = fopen("plant_list.csv","r");   // open the CSV file
         int rowI = 0;
@@ -398,7 +399,7 @@ void display_calendar()
         }
         printf("-\n");
         printf("[<'p' previous season] [next season 'n'>] | 'q': quit\n");
-        char *userChoice = getchar();
+        char userChoice = getchar();
 
         if (userChoice == 'q') {
             return;
@@ -442,7 +443,7 @@ void display_calendar()
 void list_or_calendar()
 // ask to the user if he want to see plantations from a list or a calendar.
 {
-    char *choice = NULL;
+    char choice;
     while (1) {
         clear();    // clear display
         printf("[1] List\n");
@@ -463,25 +464,26 @@ void list_or_calendar()
     }
 }
 
-
+/*
 int element_in_double_list(char *el, char **list, int len)
 // check if an element is in a list.
 {
     for (int i=0; i<len; i++) {
         if (el == list[i][0]) {
-            return 1;
+            return 1;new_plantation
         }
     }
     return 0;
 }
+*/
 
 
 void new_plantation()
 // create a new plantation and update plant_list.csv.
 {
     // get user choice (season)
-    char *seasonChoice = '0'; // user choice variable
-    while (seasonChoice<'1' || seasonChoice>'4') {
+    char seasonUserChoice[7]; // user choice variable
+    while (1) {
         clear();    // clear display
         printf("[1] Spring\n");
         printf("[2] Summer\n");
@@ -489,25 +491,32 @@ void new_plantation()
         printf("[4] Winter\n");
         printf("What season? ([1-4]/n): ");
 
-        seasonChoice = getchar();
-        if (seasonChoice == 'n') {
+        scanf("%s", &seasonUserChoice[0]);
+        if (seasonUserChoice[0] == 'n') {
             return;
         }
+        
+        if (isdigit(seasonUserChoice[0])) {
+            if (atoi(seasonUserChoice)>=1 && atoi(seasonUserChoice)<=4) {
+                break;
+            }
+        }
     }
+    char *seasonChoice;
 
     // set the season
-    if (seasonChoice == '1') {
+    if (atoi(seasonUserChoice) == 1) {
         seasonChoice = "spring";
     }
-    else if (seasonChoice == '2') {
+    else if (atoi(seasonUserChoice) == 2) {
         seasonChoice = "summer";
     }
-    else if (seasonChoice == '3') {
+    else if (atoi(seasonUserChoice) == 3) {
         seasonChoice = "fall";
     }
     else {
         seasonChoice = "winter";
-        printf("\e[1;1H\e[2J");     // scroll to clear the display
+        clear();    // clear display
         printf("Work in progress...");
         fflush(stdout);
         sleep(2);
@@ -570,7 +579,7 @@ void new_plantation()
 
         printf("What plant? ([1-%d]/n): ", i);
 
-        scanf("%s", &plantChoice);
+        scanf("%s", &plantChoice[0]);
         if (strstr(plantChoice, "n")) {
             return;
         }
@@ -581,9 +590,9 @@ void new_plantation()
     while (atoi(dayChoice)<1 || atoi(dayChoice)>28) {
         clear();    // clear display
 
-        printf("What day? ([1-28]/n): ", i);
+        printf("What day? ([1-28]/n): ");
 
-        scanf("%s", &dayChoice);
+        scanf("%s", &dayChoice[0]);
         if (strstr(dayChoice, "n")) {
             return;
         }
@@ -594,9 +603,9 @@ void new_plantation()
     while (atoi(numberChoice)<1 || atoi(numberChoice)>1000) {
         clear();    // clear display
 
-        printf("How many? ([1-1000]/n): ", i);
+        printf("How many? ([1-1000]/n): ");
 
-        scanf("%s", &numberChoice);
+        scanf("%s", &numberChoice[0]);
         if (strstr(numberChoice, "n")) {
             return;
         }
@@ -626,7 +635,8 @@ void new_plantation()
             token = strtok(NULL, ",");   // tokenize the row
 
             if (atoi(dayChoice) + atoi(token) > 28) {
-                char *yesNoChoice = NULL;
+
+                char yesNoChoice;
                 while (1) {
                     clear();    // clear display
                     printf("Warning: if you plant this plant now it will die at the next season\nDo you really want to add it to the calendar? (y/n) : ");
@@ -649,7 +659,7 @@ void new_plantation()
     }
 
     // verification
-    char *yesNoChoice = NULL;
+    char yesNoChoice;
     while (1) {
         clear();    // clear display
         printf("You want to plant %s %s at day %s of %s, is that right? (y/n): ",numberChoice, plantList[atoi(plantChoice)-1], dayChoice, seasonChoice);
@@ -715,7 +725,7 @@ void create_csv_copy(char *csvName)
     int i=0;
     while (i < get_csv_row_length(csvName)-1) {
         fgets(row, MAXCHAR, plantListCsvRead);   // get the row
-        fprintf(plantListCsvTMP, row);     // write the line on the original file
+        fprintf(plantListCsvTMP, "%s", row);     // write the line on the original file
         i++;
     }
     fclose(plantListCsvTMP);   // close the copy file
@@ -735,9 +745,22 @@ void remove_plantation()
         sleep(2);
         return;
     }
+
+    char *name;
+    name = (char*)malloc(20);
+
+    char *season;
+    season = (char*)malloc(20);
+
+    char *day;
+    day = (char*)malloc(20);
+
+    char *number;
+    number = (char*)malloc(20);
     
-    char choice[3] = "0"; // user choice variable
-    while (atoi(choice)<1 || atoi(choice)>rowLength-2) {
+    // user choice of plant to delete
+    char plantChoice[3] = "0"; // user choice variable
+    while (1) {
 
         // open CSV file (read mode)
         FILE *plantListCsvRead;  // used to read the file
@@ -757,14 +780,7 @@ void remove_plantation()
         // display plants list
         clear();    // clear display
         int rowI = 0;
-        char *name;
-        name = (char*)malloc(20);
-        char *season;
-        season = (char*)malloc(20);
-        char *day;
-        day = (char*)malloc(20);
-        char *number;
-        number = (char*)malloc(20);
+
         while (feof(plantListCsvRead) != true) {
             fgets(row, MAXCHAR, plantListCsvRead);   // get the row
             
@@ -788,25 +804,32 @@ void remove_plantation()
 
         // ask to the user his choice
         printf("\nWich plant do you want to delete? ([1-%d]/n): ", rowI-1);
-        scanf("%s", &choice); // get the user choice
-        
+        scanf("%s", &plantChoice[0]); // get the user choice
+            
         //exit if 'n'
-        if (strstr(choice, "n")) {
+        if (strstr(plantChoice, "n")) {
             return;
         }
 
-        char *choice;
-        while (1) {
-            clear();    // clear display
-            printf("Do you really want to delete %d %s planted at day %s of %s? (y/n): ", atoi(number), name, day, season);
-            choice = getchar();
-
-            if (choice == 'y') {
+        if (isdigit(plantChoice[0])) {
+            if (atoi(plantChoice)>=1 && atoi(plantChoice)<=rowLength-2) {
                 break;
             }
-            else if (choice == 'n') {
-                return;
-            }
+        }
+    }
+
+    // verification
+    char verificationChoice;
+    while (1) {
+        clear();    // clear display
+        printf("Do you really want to delete %d %s planted at day %s of %s? (y/n): ", atoi(number), name, day, season);
+        verificationChoice = getchar();
+
+        if (verificationChoice == 'y') {
+            break;
+        }
+        else if (verificationChoice == 'n') {
+            return;
         }
     }
     
@@ -847,8 +870,8 @@ void remove_plantation()
             fgets(rowTMP, MAXCHAR, TMP);   // get the row of copy
 
             // copy line only if not the line we want to remove
-            if (rowI != atoi(choice)) {
-                fprintf(plantListCsvWrite, rowTMP);     // write the line on the original file
+            if (rowI != atoi(plantChoice)) {
+                fprintf(plantListCsvWrite, "%s", rowTMP);     // write the line on the original file
             }
             rowI++; // update rowI
         }
@@ -866,7 +889,7 @@ void remove_plantation()
 void clear_calendar()
 // clear the plant_list.csv file wich contain all the plantations.
 {
-    char choice = NULL; // user choice variable
+    char choice; // user choice variable
     while (choice!='y') {
         clear();    // clear display
         printf("All saved plantations will be lost.\nAre you sure? (y/n) : ");
