@@ -702,7 +702,7 @@ void new_plantation()
 
 
 void create_csv_copy(char *csvName)
-// create a copy of a csv file
+// create a copy of a csv file.
 {
     // create new file
     FILE *plantListCsvTMP;
