@@ -4,7 +4,7 @@ The interface is very rudimentary and the software launches in the terminal.
 
 Here's a preview of the software:  
 ### Menu  
-![screenshot_calendar](Screenshots/screenshot_calendar.png) 
+![screenshot_calendar](Screenshots/screenshot_menu.png) 
 ### List  
 ![screenshot_calendar](Screenshots/screenshot_list.png)  
 ### Calendar  
