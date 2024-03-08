@@ -1,11 +1,11 @@
-#Stardew Valley Calendar  
+# Stardew Valley Calendar  
 This calendar helps you manage and organize your plantings.  
 The interface is very rudimentary and the software launches in the terminal.  
 
 Here's a preview of the software:  
-###Menu 
+### Menu  
 ![screenshot_calendar](Screenshots/screenshot_calendar.png) 
-###List
+### List  
 ![screenshot_calendar](Screenshots/screenshot_list.png)  
-###Calendar
+### Calendar  
 ![screenshot_calendar](Screenshots/screenshot_calendar.png)  
