@@ -154,6 +154,28 @@ void display_list()
 }
 
 
+int count_digits(int number) {
+    int count = 0;
+
+    // Handle the case of 0 separately
+    if (number == 0) {
+        return 1;
+    }
+
+    // For negative numbers, convert to positive
+    if (number < 0) {
+        number = -number;
+    }
+
+    while (number != 0) {
+        number = number / 10;
+        count++;
+    }
+
+    return count;
+}
+
+
 void display_calendar()
 // display the calendar to the user.
 {
@@ -242,8 +264,8 @@ void display_calendar()
 
 
                     // get plantation infos
-                    seasonalCropCsvRead = fopen("seasonal_crop.csv","r");   // open the CSV file
-                    plantListCsvRead = fopen("plant_list.csv","r");   // open the CSV file
+                    fseek(seasonalCropCsvRead, 0, SEEK_SET);    // return to first line of seasonalCropCsvRead
+                    fseek(plantListCsvRead, 0, SEEK_SET);       // return to first line of plantListCsvRead
                     int rowI = 0;
                     while (feof(plantListCsvRead) != true) {
                         fgets(rowPlantList, MAXCHAR, plantListCsvRead);   // get the row
@@ -255,11 +277,12 @@ void display_calendar()
                             plantNumber = strtok(NULL, ",");           // get the number
 
                             // search for the sell price and the days to grow
-                            seasonalCropCsvRead = fopen("seasonal_crop.csv","r");   // re-open the CSV file to go to the begining
+                            fseek(seasonalCropCsvRead, 0, SEEK_SET);    // return to first line of seasonalCropCsvRead
                             while (feof(seasonalCropCsvRead) != true) {
                                 fgets(rowSeasonalCrop, MAXCHAR, seasonalCropCsvRead);   // get the row
-
                                 if (strstr(rowSeasonalCrop, plantName)) {
+                                    //printf("bf->");
+                                    //fflush(stdout);
                                     token = strtok(rowSeasonalCrop, ",");
                                     token = strtok(NULL, ",");
                                     token = strtok(NULL, ",");
@@ -268,17 +291,20 @@ void display_calendar()
                                     token = strtok(NULL, ",");
                                     strcpy(plantSellPrice, token);   // get sell price
 
+                                    //printf("af->");
+                                    //fflush(stdout);
                                     break;
                                 }
                             }
+                            
 
                             // shift date if the plantation ready after the end of the season
-                            if (atoi(plantDay)+atoi(plantDaysToGrow)+atoi(plantDaysToGrow) <= 28) {
-                                sprintf(dayReady, "%d", atoi(plantDay)+atoi(plantDaysToGrow)+atoi(plantDaysToGrow));
+                            if (atoi(plantDay)+atoi(plantDaysToGrow) <= 28) {
+                                sprintf(dayReady, "%d", atoi(plantDay)+atoi(plantDaysToGrow));
                                 seasonReady = plantSeason;
                             }
                             else {
-                                sprintf(dayReady, "%d", (atoi(plantDay)+atoi(plantDaysToGrow)+atoi(plantDaysToGrow))-28);
+                                sprintf(dayReady, "%d", (atoi(plantDay)+atoi(plantDaysToGrow))-28);
                                 if (strstr(plantSeason,"spring")) {
                                     seasonReady = "summer";
                                 }
@@ -301,7 +327,6 @@ void display_calendar()
                         rowI++; // update rowI
                     }
 
-
                     /*display infos*/
                     // dayHeight == 0
                     if (dayHeight == 0) {
@@ -314,7 +339,7 @@ void display_calendar()
                     }
 
                     // dayHeight == 1
-                    if (dayHeight == 1) {
+                    else if (dayHeight == 1) {
                         // if plantation that day
                         if (atoi(dayReady) == dayInCalendar && strstr(seasonReady,season)) {
                             int spaces = strlen(plantName)+strlen(plantNumber)+1;   // number of spaces
@@ -330,11 +355,12 @@ void display_calendar()
                     }
 
                     // dayHeight == 2
-                    if (dayHeight == 2) {
+                    else if (dayHeight == 2) {
                         // if plantation that day
                         if (atoi(dayReady) == dayInCalendar && strstr(seasonReady,season)) {
-                            int spaces = strlen(plantSellPrice)+7;   // number of spaces
-                            printf("|sell: %dG", atoi(plantSellPrice)); // display sell price
+                            int plantSellPriceXNumber = atoi(plantSellPrice)*atoi(plantNumber);
+                            int spaces = count_digits(plantSellPriceXNumber)+8;   // number of spaces
+                            printf("|sell: %dG", plantSellPriceXNumber); // display sell price
                             for (int i=0; i<20-spaces; i++) {
                                 printf(" ");
                             }
@@ -353,7 +379,11 @@ void display_calendar()
                         dayInCalendar++;
                     }
                     
+                    /*
+                    printf("seasonReady: ");
+                    printf("%s\n",seasonReady);
                     fflush(stdout);
+                    */
 
                 }
                 printf("|\n");  // return to line
@@ -401,6 +431,7 @@ void display_calendar()
                 season = "spring";
             }
         }
+
             
         fflush(stdout);
     }
